@@ -24,3 +24,11 @@ class RegisterForm(FlaskForm):
     agree_terms = BooleanField(
         'Aceito as condições de uso e política de privacidade.',
         validators=[DataRequired()])
+
+
+class EditUserForm(FlaskForm):
+    """ Formulário de edição de usuario """
+    name = StringField('Nome', validators=[DataRequired()])
+    username = StringField('Email', validators=[
+                           DataRequired(),
+                           Email("Preencha com um email válido")])

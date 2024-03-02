@@ -1,12 +1,13 @@
 """ Imports """
-from flask import render_template, redirect, url_for, request, session
-
-from App.forms import LoginForm, RegisterForm
+from flask import render_template, redirect, url_for, request, session, flash
 from App.ext.authentication import create_user
+from App.ext.authentication import edit_user
 from App.ext.authentication import verify_login
 from App.ext.authentication import is_logged
 from App.ext.authentication import get_user
 from App.ext.authentication import is_user_already_exist
+
+from App.forms import LoginForm, RegisterForm, EditUserForm
 
 
 def init_app(app):
@@ -16,10 +17,13 @@ def init_app(app):
     app.add_url_rule("/register/", view_func=register, methods=['GET', 'POST'])
     app.add_url_rule("/login/", view_func=login, methods=['GET', 'POST'])
     app.add_url_rule("/logout/", view_func=logout)
+    app.add_url_rule("/preferences/",
+                     view_func=preferences,
+                     methods=['GET', 'POST'])
 
 
 def home():
-    """Homepage"""
+    """ Homepage """
     if not is_logged():
         return redirect(url_for('login'))
     user_logged = get_user()
@@ -27,7 +31,7 @@ def home():
 
 
 def register():
-    """Register"""
+    """ Register """
     form = RegisterForm()
     message = None
 
@@ -38,12 +42,13 @@ def register():
                                username=form.username.data,
                                password=form.password.data,
                                agree_terms=form.agree_terms.data)
+            session['username'] = request.form['username']
             return render_template('home.html', user=user)
     return render_template('register.html', form=form, message=message)
 
 
 def login():
-    """Login"""
+    """ Login """
     form = LoginForm()
     message = None
 
@@ -59,6 +64,40 @@ def login():
 
 
 def logout():
-    """Logout"""
+    """ Logout """
     session.clear()
     return redirect(url_for('simplelogin.login'))
+
+
+def preferences():
+    """ Preferencias  de usuario """
+    if not is_logged():
+        return redirect(url_for('login'))
+
+    user = get_user()
+    form = EditUserForm(obj=user)
+
+    if form.validate_on_submit():
+        if user.username != form.username.data:
+            message = is_user_already_exist(username=form.username.data)
+            if not message:
+                user.name = form.name.data
+                user.username = form.username.data
+                user = edit_user(user)
+                session['username'] = request.form['username']
+                flash('Usuário alterado com sucesso', 'success')
+                return render_template('preferences.html',
+                                       form=form,
+                                       user=user,
+                                       message=message)
+        else:
+            if user.name != form.name.data:
+                user.name = form.name.data
+                user = edit_user(user)
+                session['username'] = request.form['username']
+                flash('Usuário alterado com sucesso', 'success')
+                return render_template('preferences.html',
+                                       form=form,
+                                       user=user,
+                                       message=None)
+    return render_template('preferences.html', form=form, user=user)

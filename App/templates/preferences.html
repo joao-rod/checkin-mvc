@@ -8,7 +8,20 @@
 
 {% block body %}
     <div class="flex flex-col items-center space-x-6 mt-4">
-        <div class="w-full max-w-xl px-2 pb-2">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == 'success' %}
+                        <div id="alert-success" class="alert-error text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                            {{ message }}
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="w-full max-w-xl px-2 pb-2 mt-10">
             <a href="{{ url_for('home') }}" class="flex items-baseline space-x-2 text-gray-600">
                 <div class="flex justify-center items-center w-11 h-11 bg-white border border-gray-100 shadow rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
                     <i class="fa-solid fa-house"></i>
@@ -21,17 +34,16 @@
         <div class="text-gray-800 w-full max-w-xl bg-white border border-gray-200 rounded-lg shadow pt-10 dark:bg-gray-800 dark:border-gray-700">
             <div class="flex flex-col items-center pb-2">
                 <div class="flex flex-col justify-center items-center text-5xl font-semibold w-20 h-20 text-white bg-purple-700 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
-                    {# <h3 class="uppercase">{{ current_user.name|first }}</h3> #}
-                    <h3 class="uppercase"> J </h3>
+                    <h3 class="uppercase"> {{ user.name[0] }} </h3>
                 </div>
 
-                <form method="post" action="{{ url_for('preferences') }}" class="w-full max-w-sm space-y-6">
+                <form method="POST" action="{{ url_for('preferences') }}" class="w-full max-w-sm space-y-6">
+                    {{ form.csrf_token }}
                     <div class="w-full max-w-sm space-y-3">
                         <div>
-                            <label for="name" class="text-sm">Nome</label>
+                            {{ form.name.label(class="block") }}
                             <div class="flex items-baseline relative">
-                                {# <input type="text" class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" name="name" value="{{ current_user.name }}" disabled> #}
-                                <input id="registration_form_name" type="text" class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" name="name" value="Joao" disabled>
+                                {{ form.name(id="registration_form_name", class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer") }}
 
                                 <button type="button" id="name-edit" class="absolute right-0">
                                     <i class="fa-solid fa-pen-to-square"></i>
@@ -40,11 +52,10 @@
                         </div>
 
                         <div>
-                            <label for="email" class="text-sm">Email</label>
+                            {{ form.username.label(class="block") }}
                             <div class="flex items-baseline relative">
-                                {# <input type="email" class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" name="email" value="{{ current_user.email }}" disabled> #}
-                                <input id="registration_form_email" type="email" class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" name="email" value="joao@email.com" disabled>
-
+                                {{ form.username(id="registration_form_email", class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer") }}
+                                
                                 <button type="button" id="email-edit" class="absolute right-0">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
@@ -79,7 +90,7 @@
                     </div>
 
                     <div class="flex justify-end">
-                        <button type="submit" class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2" disabled>
+                        <button type="submit" class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2">
                             Salvar alterações
                         </button>
                     </div>
@@ -107,22 +118,8 @@
     </script>
 
     <script>
-        $(document).ready(function () {
-            $('#name-edit').click(function () {
-                $('#registration_form_name').removeAttr("disabled").focus();
-            });
-
-            $('#email-edit').click(function () {
-                $('#registration_form_email').removeAttr("disabled").focus();
-            });
-
-            $('#registration_form_name').focusout(function () {
-                $('#registration_form_name').attr("disabled", "disabled");
-            });
-
-            $('#registration_form_email').focusout(function () {
-                $('#registration_form_email').attr("disabled", "disabled");
-            });
+        $(document).ready(function() {
+            $('#alert-success').delay(3000).fadeOut();
         });
     </script>
 {% endblock %}

@@ -27,6 +27,13 @@ def create_user(name, username, password, agree_terms) -> User:
     return user
 
 
+def edit_user(user) -> User:
+    """ Edita um usuario caso o nao esteja cadastrado """
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
 def is_user_already_exist(username):
     """ Verifica se usuário já está cadastrado e retorna mensagem de erro """
     if User.query.filter_by(username=username).first():
