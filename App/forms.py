@@ -1,13 +1,26 @@
+""" Imports """
 from flask_wtf import FlaskForm
 from wtforms import PasswordField
-from wtforms.validators import DataRequired, Email
 from wtforms import StringField
-from wtforms import SubmitField
+from wtforms import BooleanField
+from wtforms.validators import DataRequired, Email
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[
+    """ Formulário de login """
+    username = StringField('Email', validators=[
                            DataRequired(),
                            Email("Preencha com um email válido")])
-    password = PasswordField('Password', validators=[DataRequired()])
-    # submit = SubmitField('Sign In')
+    password = PasswordField('Senha', validators=[DataRequired()])
+
+
+class RegisterForm(FlaskForm):
+    """ Formulário de registro """
+    name = StringField('Nome', validators=[DataRequired()])
+    username = StringField('Email', validators=[
+                           DataRequired(),
+                           Email("Preencha com um email válido")])
+    password = PasswordField('Senha', validators=[DataRequired()])
+    agree_terms = BooleanField(
+        'Aceito as condições de uso e política de privacidade.',
+        validators=[DataRequired()])

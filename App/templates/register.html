@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %} Novo Usuário {% endblock %}
+
+{% block stylesheets %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="flex justify-center">
+        <div id="form" class="form bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+            <h5 class="text-xl font-medium mb-5 text-gray-900 dark:text-white">Novo usuário</h5>
+            {% for field in form %}
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <div class="alert-error text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                            {{ error }}
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+
+            {% if message is not none %}
+                <div class="alert-error text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                    {{ message }}
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                </div>
+            {% endif %}
+
+            <form action="/register/" method="POST">
+                {{ form.csrf_token }}
+
+                <div class="mb-4">
+                    {{ form.name.label(class="block", name="name") }}
+                    {{ form.name(class="w-full") }}
+                </div>
+
+                <div class="mb-4">
+                    {{ form.username.label(class="block", name="username") }}
+                    {{ form.username(class='w-full') }}
+                </div>
+
+                <div class="mb-4">
+                    {{ form.password.label(class="block", name="password") }}
+                    {{ form.password(class='w-full') }}
+                </div>
+
+                <div class="mb-4">
+                    {{ form.agree_terms() }} {{ form.agree_terms.label(name="agree_terms") }}
+                </div>
+
+                <button type="submit" id="btn-submit" class="w-full text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                    Criar conta
+                </button>
+            </form>
+            <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                Já é registrado? <a href="{{ url_for('simplelogin.login') }}" class="text-blue-700 hover:underline dark:text-blue-500">Faça o login</a>
+            </div>
+        </div>
+
+        <div class="space-x-6 text-right">
+            <div>
+                <h2 class="text-2xl font-bold leading-none tracking-tight text-white md:text-4xl lg:text-5xl dark:text-white">Sistema de marcação de <mark class="px-2 text-white bg-blue-600 rounded dark:bg-blue-500">E/S</mark></h2>
+            </div>
+            <img src="{{ url_for('static', filename='images/timeSignup.png') }}" alt="Capa">
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ super() }}
+    <script>
+        $(document).ready(function() {
+            $('#name').focusout(function() {
+                $('#name').val() == '' ? $('#name').removeClass('input-not-empty').addClass('input-empty') : $('#name').removeClass('input-empty').addClass('input-not-empty');
+            })
+
+            $('#username').focusout(function() {
+                $('#username').val() == '' ? $('#username').removeClass('input-not-empty').addClass('input-empty') : $('#username').removeClass('input-empty').addClass('input-not-empty');
+            })
+
+            $('#password').focusout(function() {
+                $('#password').val() == '' ? $('#password').removeClass('input-not-empty').addClass('input-empty') : $('#password').removeClass('input-empty').addClass('input-not-empty');
+            })
+        })
+    </script>
+{% endblock %}

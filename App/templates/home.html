@@ -23,12 +23,10 @@
                     <div class="flex">
                         <div class="px-4">
                             <span class="block text-sm text-gray-900 dark:text-white">
-                                {# {{ current_user.name }} #}
-                                João
+                                {{ user.name }}
                             </span>
                             <span class="block text-xs text-gray-500 truncate dark:text-gray-400">
-                                {# {{ current_user.email }} #}
-                                joao@email.com
+                                {{ user.username }}
                             </span>
                         </div>
                     </div>
@@ -36,11 +34,6 @@
                     <div>
                         <ul class="flex" aria-labelledby="user-menu-button">
                             <li class="items-center">
-                                {# <a href="{{ url_for('preferences') }}"
-                                    class="px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                                    <i class="fa-solid fa-gear"></i> Preferências
-                                </a> #}
-
                                 <a href="#"
                                     class="px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                                     <i class="fa-solid fa-gear"></i> Preferências
@@ -48,12 +41,7 @@
                             </li>
 
                             <li>
-                                {# <a href="{{ url_for('app_logout') }}"
-                                    class="px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                                    <i class="fa-solid fa-right-from-bracket"></i> Sair
-                                </a> #}
-
-                                <a href="{{ url_for('simplelogin.logout') }}"
+                                <a href="{{ url_for('logout') }}"
                                     class="px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                                     <i class="fa-solid fa-right-from-bracket"></i> Sair
                                 </a>

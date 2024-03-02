@@ -1,52 +1,64 @@
-from flask import render_template
-from App import model
+""" Imports """
+from flask import render_template, redirect, url_for, request, session
 
-from App.forms import LoginForm
+from App.forms import LoginForm, RegisterForm
+from App.ext.authentication import create_user
+from App.ext.authentication import verify_login
+from App.ext.authentication import is_logged
+from App.ext.authentication import get_user
+from App.ext.authentication import is_user_already_exist
 
 
 def init_app(app):
+    """Definição das rotas"""
     app.add_url_rule("/", view_func=home)
     app.add_url_rule("/home", view_func=home)
-    app.add_url_rule("/login/", view_func=login)
-#    app.add_url_rule("/login", methods=['GET', 'POST'])
-
-
-def index():
-    h = model.Checkin.query.all()
-    l = []
-    for i in h:
-        l.append(i.nome)
-
-    return render_template("index.html", checkin=l)
+    app.add_url_rule("/register/", view_func=register, methods=['GET', 'POST'])
+    app.add_url_rule("/login/", view_func=login, methods=['GET', 'POST'])
+    app.add_url_rule("/logout/", view_func=logout)
 
 
 def home():
-    return render_template('home.html')
+    """Homepage"""
+    if not is_logged():
+        return redirect(url_for('login'))
+    user_logged = get_user()
+    return render_template('home.html', user=user_logged)
+
+
+def register():
+    """Register"""
+    form = RegisterForm()
+    message = None
+
+    if form.validate_on_submit():
+        message = is_user_already_exist(username=form.username.data)
+        if not message:
+            user = create_user(name=form.name.data,
+                               username=form.username.data,
+                               password=form.password.data,
+                               agree_terms=form.agree_terms.data)
+            return render_template('home.html', user=user)
+    return render_template('register.html', form=form, message=message)
 
 
 def login():
+    """Login"""
     form = LoginForm()
-    return render_template('login.html', form=form)
+    message = None
+
+    if request.method == 'POST' and form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
+        if verify_login(username, password):
+            session['username'] = request.form['username']
+            return redirect(url_for('home'))
+        else:
+            message = "Email ou senha incorretos."
+    return render_template('login.html', form=form, message=message)
 
 
-# def login():
-    # Here we use a class of some kind to represent and validate our
-    # client-side form data. For example, WTForms is a library that will
-    # handle this for us, and we use a custom LoginForm to validate.
-#    form = LoginForm()
-#    if form.validate_on_submit():
-    # Login and validate the user.
-    # user should be an instance of your `User` class
-#        login_user(user)
-
-#        flask.flash('Logged in successfully.')
-
- #       next = flask.request.args.get('next')
-    # url_has_allowed_host_and_scheme should check if the url is safe
-    # for redirects, meaning it matches the request host.
-    # See Django's url_has_allowed_host_and_scheme for an example.
-#        if not url_has_allowed_host_and_scheme(next, request.host):
-#            return flask.abort(400)
-
-#        return flask.redirect(next or flask.url_for('index'))
-#    return flask.render_template('login.html', form=form)
+def logout():
+    """Logout"""
+    session.clear()
+    return redirect(url_for('simplelogin.login'))
