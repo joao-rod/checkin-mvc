@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %} Novo Usuário {% endblock %}
+
+{% block stylesheets %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="flex justify-center">
+        <div class="space-x-6">
+            <div>
+                <h2 class="text-2xl font-bold leading-none tracking-tight text-white md:text-4xl lg:text-5xl dark:text-white">Sistema de marcação de <mark class="px-2 text-white bg-blue-600 rounded dark:bg-blue-500">E/S</mark></h2>
+            </div>
+            <img src="{{ url_for('static', filename='images/timeLogin.png') }}" alt="Capa">
+        </div>
+
+        <div class="form space-y-6 w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+            <form action="#" method="post" class="space-y-6">
+                {{ form.csrf_token }}
+                <h5 class="text-xl font-medium text-gray-900 dark:text-white"> Faça login </h5>
+
+                {% if error %}
+                    <div class="alert-error text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                        {# {{ error.messageKey|trans(error.messageData, 'security') }}  #}
+                        Erro
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    </div>
+                {% endif %}
+                
+                <input type="hidden" name="_target_path" value="/">
+
+                <div>
+                    <label for="username" class="block">Email</label>
+                    {# <input type="email" class="w-full" id="username" name="_username" value="{{ lastUser }}"> #}
+                    
+                    {{ form.username(class="w-full") }}
+                </div>
+
+                <div>
+                    <label for="password" class="block">Senha</label>
+                    {{ form.password(class="w-full") }}
+                </div>
+                
+                <button type="submit" id="btn-submit" class="w-full text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                    Fazer login
+                </button>
+            </form>
+            <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                {# Não é registrado? <a href="{{ url_for('app_register') }}" class="text-blue-700 hover:underline dark:text-blue-500">Crie uma conta</a> #}
+                Não é registrado? <a href="#" class="text-blue-700 hover:underline dark:text-blue-500">Crie uma conta</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ super() }}
+    <script>
+        $(document).ready(function() {
+            $('#username').focusout(function() {
+                $('#username').val() == '' ? $('#username').removeClass('input-not-empty').addClass('input-empty') : $('#username').removeClass('input-empty').addClass('input-not-empty');
+            })
+
+            $('#password').focusout(function() {
+                $('#password').val() == '' ? $('#password').removeClass('input-not-empty').addClass('input-empty') : $('#password').removeClass('input-empty').addClass('input-not-empty');
+            })
+        })
+    </script>
+{% endblock %}

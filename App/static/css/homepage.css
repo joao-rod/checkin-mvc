@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+
+.container {
+    min-height: 80%;
+}
+
+#entries {
+    min-width: 30% !important;
+}
+
+#options-user {
+    min-width: 20% !important;
+}
+
+#clock {
+    font-family: Orbitron;
+    font-weight: 900;
+}
+
+.clock-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    min-width: 40%;
+}

@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %} Preferências {% endblock %}
+
+{% block stylesheets %}
+    {{ super() }}
+{% endblock %}
+
+{% block body %}
+    <div class="flex flex-col items-center space-x-6 mt-4">
+        <div class="w-full max-w-xl px-2 pb-2">
+            <a href="{{ url_for('home') }}" class="flex items-baseline space-x-2 text-gray-600">
+                <div class="flex justify-center items-center w-11 h-11 bg-white border border-gray-100 shadow rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
+                    <i class="fa-solid fa-house"></i>
+                </div>
+
+                <span>Home</span>
+            </a>
+        </div>
+
+        <div class="text-gray-800 w-full max-w-xl bg-white border border-gray-200 rounded-lg shadow pt-10 dark:bg-gray-800 dark:border-gray-700">
+            <div class="flex flex-col items-center pb-2">
+                <div class="flex flex-col justify-center items-center text-5xl font-semibold w-20 h-20 text-white bg-purple-700 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
+                    {# <h3 class="uppercase">{{ current_user.name|first }}</h3> #}
+                    <h3 class="uppercase"> J </h3>
+                </div>
+
+                <form method="post" action="{{ url_for('preferences') }}" class="w-full max-w-sm space-y-6">
+                    <div class="w-full max-w-sm space-y-3">
+                        <div>
+                            <label for="name" class="text-sm">Nome</label>
+                            <div class="flex items-baseline relative">
+                                {# <input type="text" class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" name="name" value="{{ current_user.name }}" disabled> #}
+                                <input id="registration_form_name" type="text" class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" name="name" value="Joao" disabled>
+
+                                <button type="button" id="name-edit" class="absolute right-0">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="email" class="text-sm">Email</label>
+                            <div class="flex items-baseline relative">
+                                {# <input type="email" class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" name="email" value="{{ current_user.email }}" disabled> #}
+                                <input id="registration_form_email" type="email" class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" name="email" value="joao@email.com" disabled>
+
+                                <button type="button" id="email-edit" class="absolute right-0">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full max-w-sm flex justify-between">
+                        <p>Redefinir senha</p>
+
+                        <label class="relative inline-flex align-items-center cursor-pointer">
+                            <input id="check" type="checkbox" value="" class="sr-only peer">
+                            <div id="ckeck-toogle" class="bg-gray-200 w-11 h-6 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
+                        </label>
+                    </div>
+
+                    <div id="password-reset" class="w-full max-w-sm space-y-3" style="display: none;">
+                        <div>
+                            <label for="old-password" class="text-sm">Senha atual</label>
+                            <input type="password" name="old-password" id="old-password" class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                        </div>
+
+                        <div>
+                            <label for="new-password" class="text-sm">Nova senha</label>
+                            <input type="password" name="new-password" id="new-password" class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                        </div>
+
+                        <div>
+                            <label for="confirm-password" class="text-sm">Confirme a senha</label>
+                            <input type="password" name="confirm-password" id="confirm-password" class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="submit" class="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2" disabled>
+                            Salvar alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ super() }}
+
+    <script>
+        $(document).ready(function () {
+            $('#check').click(function () {
+                if ($('#check').is(':checked')) {
+                    $('#ckeck-toogle').removeClass('bg-gray-200').addClass('bg-gradient-to-br from-purple-600 to-blue-500');
+                    $('#password-reset').css('display', 'block');
+                } else {
+                    $('#ckeck-toogle').removeClass('bg-gradient-to-br from-purple-600 to-blue-500').addClass('bg-gray-200');
+                    $('#password-reset').css('display', 'none');
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('#name-edit').click(function () {
+                $('#registration_form_name').removeAttr("disabled").focus();
+            });
+
+            $('#email-edit').click(function () {
+                $('#registration_form_email').removeAttr("disabled").focus();
+            });
+
+            $('#registration_form_name').focusout(function () {
+                $('#registration_form_name').attr("disabled", "disabled");
+            });
+
+            $('#registration_form_email').focusout(function () {
+                $('#registration_form_email').attr("disabled", "disabled");
+            });
+        });
+    </script>
+{% endblock %}

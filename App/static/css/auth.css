@@ -1,0 +1,32 @@
+body {
+    background-image: url("/static/images/bg.jpg");
+    background-size: cover;
+
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+
+    min-height: 100vh !important;
+}
+
+.form {
+    min-width: 40% !important;
+}
+
+input {
+    border-color: #b6b2b2 !important;
+    border-radius: 5px !important;
+    outline: 0 !important;
+}
+
+.alert-error {
+    opacity: 0.6;
+}
+
+.input-empty {
+    border-color: #ff272750 !important;
+}
+
+.input-not-empty {
+    border-color: #009159 !important;
+}
