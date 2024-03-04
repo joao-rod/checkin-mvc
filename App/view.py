@@ -6,6 +6,7 @@ from App.ext.authentication import verify_login
 from App.ext.authentication import is_logged
 from App.ext.authentication import get_user
 from App.ext.authentication import is_user_already_exist
+from App.ext.authentication import check_current_password
 
 from App.forms import LoginForm, RegisterForm, EditUserForm
 
@@ -66,7 +67,7 @@ def login():
 def logout():
     """ Logout """
     session.clear()
-    return redirect(url_for('simplelogin.login'))
+    return redirect(url_for('login'))
 
 
 def preferences():
@@ -76,14 +77,29 @@ def preferences():
 
     user = get_user()
     form = EditUserForm(obj=user)
+    message = None
 
     if form.validate_on_submit():
+        if form.change_password.data:
+            current_password = form.current_password.data
+            new_password = form.new_password.data
+
+            if not check_current_password(user, current_password):
+                message = "Senha atual incorreta"
+                return render_template('preferences.html',
+                                       form=form,
+                                       user=user,
+                                       message=message)
+        else:
+            current_password = None
+            new_password = None
+
         if user.username != form.username.data:
             message = is_user_already_exist(username=form.username.data)
             if not message:
                 user.name = form.name.data
                 user.username = form.username.data
-                user = edit_user(user)
+                user = edit_user(user, current_password, new_password)
                 session['username'] = request.form['username']
                 flash('Usuário alterado com sucesso', 'success')
                 return render_template('preferences.html',
@@ -92,12 +108,15 @@ def preferences():
                                        message=message)
         else:
             if user.name != form.name.data:
-                user.name = form.name.data
-                user = edit_user(user)
-                session['username'] = request.form['username']
                 flash('Usuário alterado com sucesso', 'success')
-                return render_template('preferences.html',
-                                       form=form,
-                                       user=user,
-                                       message=None)
-    return render_template('preferences.html', form=form, user=user)
+            else:
+                flash('Senha alterada com sucesso', 'success')
+
+            user.name = form.name.data
+            user = edit_user(user, current_password, new_password)
+            session['username'] = request.form['username']
+
+    return render_template('preferences.html',
+                           form=form,
+                           user=user,
+                           message=message)

@@ -21,6 +21,24 @@
             {% endif %}
         {% endwith %}
 
+        {% for field in form %}
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <div class="alert-error text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                        {{ error }}
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+
+        {% if message is not none %}
+            <div class="alert-error text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                {{ message }}
+                <i class="fa-solid fa-circle-exclamation"></i>
+            </div>
+        {% endif %}
+
         <div class="w-full max-w-xl px-2 pb-2 mt-10">
             <a href="{{ url_for('home') }}" class="flex items-baseline space-x-2 text-gray-600">
                 <div class="flex justify-center items-center w-11 h-11 bg-white border border-gray-100 shadow rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
@@ -64,28 +82,23 @@
                     </div>
 
                     <div class="w-full max-w-sm flex justify-between">
-                        <p>Redefinir senha</p>
+                        {{ form.change_password.label }}
 
                         <label class="relative inline-flex align-items-center cursor-pointer">
-                            <input id="check" type="checkbox" value="" class="sr-only peer">
+                            {{ form.change_password(id="check", class="sr-only peer", type="checkbox") }}
                             <div id="ckeck-toogle" class="bg-gray-200 w-11 h-6 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600"></div>
                         </label>
                     </div>
 
                     <div id="password-reset" class="w-full max-w-sm space-y-3" style="display: none;">
                         <div>
-                            <label for="old-password" class="text-sm">Senha atual</label>
-                            <input type="password" name="old-password" id="old-password" class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                            {{ form.current_password.label(class="text-sm") }}
+                            {{ form.current_password(id="current-pwd", class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer") }}
                         </div>
 
                         <div>
-                            <label for="new-password" class="text-sm">Nova senha</label>
-                            <input type="password" name="new-password" id="new-password" class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
-                        </div>
-
-                        <div>
-                            <label for="confirm-password" class="text-sm">Confirme a senha</label>
-                            <input type="password" name="confirm-password" id="confirm-password" class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
+                            {{ form.new_password.label(class="text-sm") }}
+                            {{ form.new_password(id="new-pwd", class="block w-full px-0 py-1 text-md text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer") }}
                         </div>
                     </div>
 
@@ -105,11 +118,16 @@
 
     <script>
         $(document).ready(function () {
+            $('#check').prop('checked', false);
             $('#check').click(function () {
                 if ($('#check').is(':checked')) {
+                    $('#current-pwd').attr('required', 'required')
+                    $('#new-pwd').attr('required', 'required')
                     $('#ckeck-toogle').removeClass('bg-gray-200').addClass('bg-gradient-to-br from-purple-600 to-blue-500');
                     $('#password-reset').css('display', 'block');
                 } else {
+                    $('#current-pwd').removeAttr('required')
+                    $('#new-pwd').removeAttr('required')
                     $('#ckeck-toogle').removeClass('bg-gradient-to-br from-purple-600 to-blue-500').addClass('bg-gray-200');
                     $('#password-reset').css('display', 'none');
                 }
@@ -120,6 +138,7 @@
     <script>
         $(document).ready(function() {
             $('#alert-success').delay(3000).fadeOut();
+            $('.alert-error').delay(3000).fadeOut();
         });
     </script>
 {% endblock %}

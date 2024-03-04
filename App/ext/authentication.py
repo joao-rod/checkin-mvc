@@ -27,11 +27,21 @@ def create_user(name, username, password, agree_terms) -> User:
     return user
 
 
-def edit_user(user) -> User:
-    """ Edita um usuario caso o nao esteja cadastrado """
+def edit_user(user, password, new_password):
+    """ Edita um usuario """
+    if password:
+        if check_password_hash(user.password, password):
+            user.password = generate_password_hash(new_password)
+
     db.session.add(user)
     db.session.commit()
     return user
+
+
+def check_current_password(user, password):
+    """ Verifica se a senha digitada confere com a atual """
+    if password:
+        return check_password_hash(user.password, password)
 
 
 def is_user_already_exist(username):

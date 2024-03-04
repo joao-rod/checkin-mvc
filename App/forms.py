@@ -32,3 +32,6 @@ class EditUserForm(FlaskForm):
     username = StringField('Email', validators=[
                            DataRequired(),
                            Email("Preencha com um email válido")])
+    change_password = BooleanField('Alterar senha')
+    current_password = PasswordField('Senha atual')
+    new_password = PasswordField('Nova senha')
