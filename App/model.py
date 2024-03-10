@@ -43,3 +43,9 @@ def save_marking(checkin) -> Checkin:
 def find_markings_by_date(user_id, date) -> list:
     """ Busca todas as marcações """
     return Checkin.query.filter_by(user_id=user_id, date=date).all()
+
+
+def find_last_marking(user_id) -> Checkin:
+    """ Busca a ultima marcação """
+    return Checkin.query.filter_by(user_id=user_id).order_by(Checkin.created
+                                                             .desc()).first()

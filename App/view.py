@@ -19,6 +19,7 @@ from App.ext.authentication import check_current_password
 from App.model import Checkin
 from App.model import save_marking
 from App.model import find_markings_by_date
+from App.model import find_last_marking
 from App.forms import LoginForm, RegisterForm, EditUserForm, MarkingForm
 
 
@@ -47,12 +48,21 @@ def home():
     form = MarkingForm(time=curret_time)
 
     if request.method == 'POST' and form.validate_on_submit():
+        last_marking = find_last_marking(user_logged.id)
+        if last_marking:
+            if last_marking.is_entry:
+                is_entry = False
+            else:
+                is_entry = True
+        else:
+            is_entry = True
+
         marking = Checkin(user_id=user_logged.id,
-                          is_entry=True,
+                          is_entry=is_entry,
                           description=form.description.data)
+
         save_marking(marking)
         return redirect(url_for('home', user=user_logged))
-
     return render_template('home.html',
                            user=user_logged,
                            form=form,
