@@ -9,13 +9,15 @@ from App.ext.authentication import get_user
 from App.ext.authentication import is_user_already_exist
 from App.ext.authentication import check_current_password
 
+from App.model import Checkin
+from App.model import save_marking
 from App.forms import LoginForm, RegisterForm, EditUserForm, MarkingForm
 
 
 def init_app(app):
     """Definição das rotas"""
     app.add_url_rule("/", view_func=home)
-    app.add_url_rule("/home", view_func=home, methods=['GET', 'POST'])
+    app.add_url_rule("/home/", view_func=home, methods=['GET', 'POST'])
     app.add_url_rule("/register/", view_func=register, methods=['GET', 'POST'])
     app.add_url_rule("/login/", view_func=login, methods=['GET', 'POST'])
     app.add_url_rule("/logout/", view_func=logout)
@@ -31,11 +33,15 @@ def home():
 
     user_logged = get_user()
 
-    curret_time = datetime.now().time()
+    curret_time = datetime.now()
     form = MarkingForm(time=curret_time)
 
-    if form.validate_on_submit():
-        print(form.data)
+    if request.method == 'POST' and form.validate_on_submit():
+        marking = Checkin(user_id=user_logged.id,
+                          is_entry=True,
+                          description=form.description.data)
+        save_marking(marking)
+        return redirect(url_for('home', user=user_logged))
 
     return render_template('home.html', user=user_logged, form=form)
 
@@ -53,7 +59,7 @@ def register():
                                password=form.password.data,
                                agree_terms=form.agree_terms.data)
             session['username'] = request.form['username']
-            return render_template('home.html', user=user)
+            return redirect(url_for('home', user=user))
     return render_template('register.html', form=form, message=message)
 
 

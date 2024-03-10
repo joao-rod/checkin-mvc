@@ -7,7 +7,6 @@ from sqlalchemy import String
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
 from sqlalchemy import Date
-from sqlalchemy import Time
 from sqlalchemy import ForeignKey
 
 from App.ext.database import db
@@ -29,7 +28,13 @@ class Checkin(db.Model, SerializerMixin):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     created = Column(DateTime, default=datetime.now)
-    date = Column(Date, nullable=False)
-    time = Column(Time, nullable=False)
+    date = Column(Date, default=datetime.now().date)
     is_entry = Column(Boolean, nullable=False)
     description = Column(String(100), nullable=True)
+
+
+def save_marking(checkin) -> Checkin:
+    """ Salva marcação """
+    db.session.add(checkin)
+    db.session.commit()
+    return checkin

@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import PasswordField
 from wtforms import StringField
 from wtforms import BooleanField
-from wtforms import TimeField
+from wtforms import DateTimeField
 from wtforms import TextAreaField
 from wtforms.validators import DataRequired, Email
 
@@ -41,5 +41,5 @@ class EditUserForm(FlaskForm):
 
 class MarkingForm(FlaskForm):
     """ Formulário de confirmação de marcação de hora """
-    time = TimeField('Horário')
+    time = DateTimeField('Horário', format='%H:%M')
     description = TextAreaField('Descrição')
