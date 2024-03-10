@@ -38,3 +38,8 @@ def save_marking(checkin) -> Checkin:
     db.session.add(checkin)
     db.session.commit()
     return checkin
+
+
+def find_markings_by_date(user_id, date) -> list:
+    """ Busca todas as marcações """
+    return Checkin.query.filter_by(user_id=user_id, date=date).all()

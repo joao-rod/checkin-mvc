@@ -18,6 +18,7 @@ from App.ext.authentication import check_current_password
 
 from App.model import Checkin
 from App.model import save_marking
+from App.model import find_markings_by_date
 from App.forms import LoginForm, RegisterForm, EditUserForm, MarkingForm
 
 
@@ -40,6 +41,7 @@ def home():
         return redirect(url_for('login'))
 
     user_logged = get_user()
+    markings = find_markings_by_date(user_logged.id, datetime.now().date())
 
     curret_time = datetime.now()
     form = MarkingForm(time=curret_time)
@@ -51,7 +53,10 @@ def home():
         save_marking(marking)
         return redirect(url_for('home', user=user_logged))
 
-    return render_template('home.html', user=user_logged, form=form)
+    return render_template('home.html',
+                           user=user_logged,
+                           form=form,
+                           markings=markings)
 
 
 def register():
