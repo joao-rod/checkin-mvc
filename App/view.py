@@ -1,4 +1,5 @@
 """ Imports """
+from datetime import datetime
 from flask import render_template, redirect, url_for, request, session, flash
 from App.ext.authentication import create_user
 from App.ext.authentication import edit_user
@@ -8,13 +9,13 @@ from App.ext.authentication import get_user
 from App.ext.authentication import is_user_already_exist
 from App.ext.authentication import check_current_password
 
-from App.forms import LoginForm, RegisterForm, EditUserForm
+from App.forms import LoginForm, RegisterForm, EditUserForm, MarkingForm
 
 
 def init_app(app):
     """Definição das rotas"""
     app.add_url_rule("/", view_func=home)
-    app.add_url_rule("/home", view_func=home)
+    app.add_url_rule("/home", view_func=home, methods=['GET', 'POST'])
     app.add_url_rule("/register/", view_func=register, methods=['GET', 'POST'])
     app.add_url_rule("/login/", view_func=login, methods=['GET', 'POST'])
     app.add_url_rule("/logout/", view_func=logout)
@@ -27,8 +28,16 @@ def home():
     """ Homepage """
     if not is_logged():
         return redirect(url_for('login'))
+
     user_logged = get_user()
-    return render_template('home.html', user=user_logged)
+
+    curret_time = datetime.now().time()
+    form = MarkingForm(time=curret_time)
+
+    if form.validate_on_submit():
+        print(form.data)
+
+    return render_template('home.html', user=user_logged, form=form)
 
 
 def register():

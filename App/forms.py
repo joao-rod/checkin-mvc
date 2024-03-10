@@ -3,6 +3,8 @@ from flask_wtf import FlaskForm
 from wtforms import PasswordField
 from wtforms import StringField
 from wtforms import BooleanField
+from wtforms import TimeField
+from wtforms import TextAreaField
 from wtforms.validators import DataRequired, Email
 
 
@@ -35,3 +37,9 @@ class EditUserForm(FlaskForm):
     change_password = BooleanField('Alterar senha')
     current_password = PasswordField('Senha atual')
     new_password = PasswordField('Nova senha')
+
+
+class MarkingForm(FlaskForm):
+    """ Formulário de confirmação de marcação de hora """
+    time = TimeField('Horário')
+    description = TextAreaField('Descrição')
