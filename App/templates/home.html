@@ -104,25 +104,21 @@
                 </ol>
             </div>
 
-            {# <div data-dial-init class="flex justify-end items-end">
-                <a href="{{ path('app_new') }}" 
-                type="button" 
-                data-dial-toggle="speed-dial-menu-default" 
-                aria-controls="speed-dial-menu-default" 
-                aria-expanded="false" 
-                class="flex items-center justify-center text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 rounded-full w-14 h-14 dark:bg-blue-600 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 group">
-                    <i aria-hidden="true" class="fa-solid fa-plus w-6 h-6 transition-transform group-hover:rotate-45"></i>
-                </a>
-            </div> #}
             <div data-dial-init class="flex justify-end items-end">
-                <a href="#" 
+                <!-- Modal toggle -->
+                <button data-modal-target="crud-modal" data-modal-toggle="crud-modal" class="flex items-center justify-center text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 rounded-full w-14 h-14 dark:bg-blue-600 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 group" type="button">
+                    <i class="fa-solid fa-plus w-6 h-6 transition-transform group-hover:rotate-45"></i>
+                </button>
+
+                {% include "confirm_modal.html" %}
+                {# <a href="#" 
                 type="button" 
                 data-dial-toggle="speed-dial-menu-default" 
                 aria-controls="speed-dial-menu-default" 
                 aria-expanded="false" 
                 class="flex items-center justify-center text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 rounded-full w-14 h-14 dark:bg-blue-600 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800 group">
                     <i aria-hidden="true" class="fa-solid fa-plus w-6 h-6 transition-transform group-hover:rotate-45"></i>
-                </a>
+                </a> #}
             </div>
         </div>
 
