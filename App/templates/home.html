@@ -56,10 +56,10 @@
     <div class="container flex justify-center space-x-6 mx-auto">
         <div id="entries" class="flex flex-col justify-between max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
             <div>
-                {# {% set currentDate = "now"|date("d/m/Y") %} #}
-                {# <h1 class="flex items-center justify-between mb-5 text-2xl font-semibold text-gray-600 dark:text-gray-400 dark:text-white">Marcações <span class="bg-purple-100 text-purple-700 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ml-2">{{ currentDate }}</span></h1> #}
-                <h1 class="flex items-center justify-between mb-5 text-2xl font-semibold text-gray-600 dark:text-gray-400 dark:text-white">Marcações <span class="bg-purple-100 text-purple-700 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ml-2"> 28/12/2023 </span></h1>
-
+                <h1 class="flex items-center justify-between mb-5 text-2xl font-semibold text-gray-600 dark:text-gray-400 dark:text-white"> 
+                    Marcações 
+                    <span id="current-date" class="bg-purple-100 text-purple-700 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ml-2"></span>
+                </h1>
 
                 <ol class="relative border-l border-gray-200 dark:border-gray-700">                  
                     <li class="mb-10 ml-6">
@@ -199,6 +199,18 @@
             $('.fc-day').addClass('font-normal text-gray-800 lex dark:text-gray-300');
             $('.fc-col-header-cell').addClass('bg-purple-100');
             $('.fc-col-header-cell-cushion').addClass('text-purple-700 text-sm font-semibold');
+        });
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: '/get_current_date/',
+                type: 'GET',
+                success: function(response) {
+                    $('#current-date').html(response.current_date);
+                }
+            });
         });
     </script>
 {% endblock %}

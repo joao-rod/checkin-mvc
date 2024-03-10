@@ -1,6 +1,13 @@
 """ Imports """
 from datetime import datetime
-from flask import render_template, redirect, url_for, request, session, flash
+from flask import render_template
+from flask import redirect
+from flask import url_for
+from flask import request
+from flask import session
+from flask import flash
+from flask import jsonify
+
 from App.ext.authentication import create_user
 from App.ext.authentication import edit_user
 from App.ext.authentication import verify_login
@@ -21,9 +28,10 @@ def init_app(app):
     app.add_url_rule("/register/", view_func=register, methods=['GET', 'POST'])
     app.add_url_rule("/login/", view_func=login, methods=['GET', 'POST'])
     app.add_url_rule("/logout/", view_func=logout)
+    app.add_url_rule('/get_current_date/',
+                     view_func=get_current_date, methods=['GET'])
     app.add_url_rule("/preferences/",
-                     view_func=preferences,
-                     methods=['GET', 'POST'])
+                     view_func=preferences, methods=['GET', 'POST'])
 
 
 def home():
@@ -135,3 +143,9 @@ def preferences():
                            form=form,
                            user=user,
                            message=message)
+
+
+def get_current_date():
+    """ Obtém a data atual """
+    current_date = datetime.now().strftime('%d/%m/%Y')
+    return jsonify({'current_date': current_date})
