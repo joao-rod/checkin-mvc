@@ -137,11 +137,13 @@
         <div class="clock-container">
             <div class="flex space-x-6">
                 <div class="w-full block mb-5 text-center max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                    <h5>Horas trabalhadas</h5>
+                    <strong class="text-gray-700" style="text-wrap: nowrap;">Horas trabalhadas</strong>
+                    <p class="text-gray-700">{{ hours }}</p>
                 </div>
 
                 <div class="w-full block mb-5 text-center max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                    <h5>Previsão de saída</h5>
+                    <strong class="text-gray-700" style="text-wrap: nowrap;">Previsão de saída</strong>
+                    <p class="text-gray-700">{{ end_time }}</p>
                 </div>
             </div>
 

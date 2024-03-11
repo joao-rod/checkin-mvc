@@ -1,4 +1,5 @@
 """ Imports """
+from datetime import timedelta
 from datetime import datetime
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy import Column
@@ -45,7 +46,36 @@ def find_markings_by_date(user_id, date) -> list:
     return Checkin.query.filter_by(user_id=user_id, date=date).all()
 
 
-def find_last_marking(user_id) -> Checkin:
+def find_last_marking(user_id, date) -> Checkin:
     """ Busca a ultima marcação """
-    return Checkin.query.filter_by(user_id=user_id).order_by(Checkin.created
-                                                             .desc()).first()
+    return Checkin.query.filter_by(user_id=user_id, date=date).order_by(
+        Checkin.created.desc()).first()
+
+
+def find_total_hours_worked(user_id, date):
+    """Calcula o total de horas trabalhadas pelo usuário"""
+    checkins = Checkin.query.filter_by(
+        user_id=user_id, date=date).order_by(Checkin.created).all()
+    total_seconds = 0
+    for i in range(0, len(checkins), 2):
+        if i + 1 < len(checkins):
+            entry = checkins[i]
+            output = checkins[i + 1]
+            total_seconds += (output.created - entry.created).seconds
+
+    return total_seconds / 3600
+
+
+def find_expected_end_time(user_id, date):
+    """Calcula o horário previsto de término"""
+    checkin = find_last_marking(user_id, date)
+
+    if checkin is None:
+        return None
+
+    total_hours = find_total_hours_worked(user_id, date)
+    remaining_hours = 8 - total_hours
+
+    expected_end_time = checkin.created + timedelta(hours=remaining_hours)
+
+    return expected_end_time.time()

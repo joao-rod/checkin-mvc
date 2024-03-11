@@ -15,11 +15,14 @@ from App.ext.authentication import is_logged
 from App.ext.authentication import get_user
 from App.ext.authentication import is_user_already_exist
 from App.ext.authentication import check_current_password
+from App.ext.send_email import send_email
 
 from App.model import Checkin
 from App.model import save_marking
 from App.model import find_markings_by_date
 from App.model import find_last_marking
+from App.model import find_total_hours_worked
+from App.model import find_expected_end_time
 from App.forms import LoginForm, RegisterForm, EditUserForm, MarkingForm
 
 
@@ -42,13 +45,19 @@ def home():
         return redirect(url_for('login'))
 
     user_logged = get_user()
-    markings = find_markings_by_date(user_logged.id, datetime.now().date())
+    today = datetime.now().date()
+    markings = find_markings_by_date(user_id=user_logged.id, date=today)
+    end_time = find_expected_end_time(user_id=user_logged.id, date=today)
+    time = find_total_hours_worked(user_id=user_logged.id, date=today)
+
+    hours = int(time)
+    minutes = int((time - hours) * 60)
 
     curret_time = datetime.now()
     form = MarkingForm(time=curret_time)
 
     if request.method == 'POST' and form.validate_on_submit():
-        last_marking = find_last_marking(user_logged.id)
+        last_marking = find_last_marking(user_id=user_logged.id, date=today)
         if last_marking:
             if last_marking.is_entry:
                 is_entry = False
@@ -62,11 +71,24 @@ def home():
                           description=form.description.data)
 
         save_marking(marking)
+
+        if hours >= 8:
+            send_email(user=user_logged, markings=markings)
+
+        # send_email(user=user_logged, markings=markings)
+
         return redirect(url_for('home', user=user_logged))
+
+    if end_time is None:
+        end_time = "--:--"
+    else:
+        end_time = end_time.strftime("%H:%M")
     return render_template('home.html',
                            user=user_logged,
                            form=form,
-                           markings=markings)
+                           markings=markings,
+                           hours=f"{hours:02d}:{minutes:02d}",
+                           end_time=end_time)
 
 
 def register():
